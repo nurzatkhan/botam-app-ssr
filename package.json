@@ -9,14 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextcss/reset": "^0.2.4-beta",
+    "@prisma/client": "4.11.0",
     "@types/node": "18.14.1",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "eslint": "8.34.0",
     "eslint-config-next": "13.2.1",
     "next": "13.2.1",
+    "prisma": "^4.11.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "4.9.5"
+    "react-webcam": "^7.0.1",
+    "typescript": "4.9.5",
+    "zod": "^3.21.0"
+  },
+  "devDependencies": {
+    "sass": "^1.58.3"
   }
 }

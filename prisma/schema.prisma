@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SUPABASE_DB_URL")
+}
+
+model baby {
+  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  sesion            String              @unique @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  firstname         String              @db.VarChar(200)
+  lastname          String              @db.VarChar(200)
+  surname           String?             @db.VarChar(200)
+  is_boy            Boolean
+  face_url          String              @db.VarChar(2000)
+  baby_book_example baby_book_example[]
+}
+
+model baby_book_example {
+  baby_id         String       @db.Uuid
+  book_example_id String       @db.Uuid
+  cover_url       String       @db.VarChar(2000)
+  baby            baby         @relation(fields: [baby_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  book_example    book_example @relation(fields: [book_example_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([baby_id, book_example_id], map: "baby_example_book")
+}
+
+model book_example {
+  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name              String              @unique @db.Char(200)
+  content           String
+  content_keys      Json?               @db.Json
+  baby_book_example baby_book_example[]
+}
