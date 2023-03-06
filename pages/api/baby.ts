@@ -27,33 +27,30 @@ export default async function handler(
 
 async function getBabyData(req: NextApiRequest, res: NextApiResponse) {
   try {
-    if (req.body.id) {
+    if (req.query.id && typeof req.query.id === "string") {
       return res.status(200).json(
         await prisma.baby.findUnique({
-          where: { id: req.body.id },
+          where: { id: req.query.id },
           include: {
             baby_book_example: true,
           },
         })
       );
     }
-    if (req.body.sesion_id) {
-      return res.status(200).json(
-        await prisma.baby.findUnique({
-          where: { sesion: req.body.sesion_id },
-          include: {
-            baby_book_example: true,
-          },
-        })
-      );
+    if (req.query.sesion_id && typeof req.query.sesion_id === "string") {
+      const data = await prisma.baby.findUnique({
+        where: { sesion: req.query.sesion_id },
+        include: {
+          baby_book_example: { include: { book_example: true } },
+        },
+      });
+      return res.status(200).json(data);
     }
     return res.status(200).json("sesion_id || id");
   } catch (e) {
     return res.status(500).send(e);
   }
 }
-
-
 
 async function createBaby(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -74,7 +71,7 @@ async function createBaby(req: NextApiRequest, res: NextApiResponse) {
               return {
                 book_example_id: value.id,
                 cover_url:
-                  "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpeople.com%2Fhealth%2Flizzo-declares-big-girl-summer-has-officially-begun-as-she-shows-off-her-abs-in-a-bikini%2F&psig=AOvVaw1DAlX3w_SFCbQPUorl_80h&ust=1678112222082000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCJCm8aj9xP0CFQAAAAAdAAAAABAJ",
+                  "https://m.media-amazon.com/images/I/61gONB+s+zS._AC_SX679_.jpg",
               };
             }),
           },

@@ -37,11 +37,6 @@ export default function Home() {
   return (
     <>
       <>
-        <Head>
-          <title>botam</title>
-          <meta name="description" content="botam книга для детей" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <Header
           rightContent={
             <div

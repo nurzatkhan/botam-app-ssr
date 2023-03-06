@@ -28,15 +28,42 @@ export default async function handler(
 }
 
 async function getBook(req: NextApiRequest, res: NextApiResponse) {
-  const book = await prisma.baby.findUnique({
-    where: { sesion: req.body.sesion_id },
-    include: {
-      baby_book_example: {
-        include: {
-          book_example: true,
+  console.log("req.query.id", req.query.id);
+  console.log("req.query.baby_id", req.query.baby_id);
+
+  if (
+    typeof req.query.id === "string" &&
+    req.query.id &&
+    req.query.baby_id &&
+    typeof req.query.baby_id === "string"
+  ) {
+    const baby = await prisma.baby.findUnique({
+      where: { id: req.query.baby_id },
+    });
+    const book = await prisma.book_example.findUnique({
+      where: { id: req.query.id },
+      include: {
+        baby_book_example: {
+          where: {
+            baby_id: req.query.baby_id,
+          },
         },
       },
-    },
-  });
-  res.status(200).json(book);
+    });
+    let content = book?.content || "";
+    const contentArg: { [x: string]: string } = {
+      ["firstname"]: baby?.firstname || "вы не задали имя",
+    };
+    const sheckTheTemplateForArgument = content.match(/\{{(.*?)\}}/g) || [];
+    sheckTheTemplateForArgument.forEach((value) => {
+      const inStr = contentArg[value.replace(/[{}]/gi, "")] || "";
+      content = content.replace(value, inStr);
+    });
+
+    res.status(200).json({
+      bookName: book?.name,
+      content: content,
+      coverUrl: book?.baby_book_example[0].cover_url,
+    });
+  }
 }
